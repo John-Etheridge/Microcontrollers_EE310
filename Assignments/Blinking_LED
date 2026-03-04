@@ -1,0 +1,21 @@
+MYREG	EQU	0x08		;use location 08 as counter
+	ORG	0x0
+
+BACK	MOVLW	0x55		;load WREG with 0x55
+	MOVWF	PORTC		;Send 0x55 from WREG into file PORTB
+	CALL	DELAY		;Jumps to function DELAY
+	MOVLW	0xAA		;load WREG with 0xAA
+	MOVWF	PORTC		;send 0xAA from WREG into file PORTB
+	CALL	DELAY
+	GOTO	BACK		;Jumps back up to Back so, a continous loop of turning LEDS on and off.
+
+	;Seperate DELAY from main
+	ORG	0x300		;puts function DELAY at adress 0x300
+DELAY	MOVLW	0xFF		;load WREG with 0xFF, this is a counter
+	MOVWF	MYREG
+AGAIN	NOP			;NOP wastes clock cycles and creates a time delay
+	NOP
+	DECF	MYREG,1
+	BNZ	AGAIN		;Checks status zero bit to see if its not set, if it is not then go to AGAIN
+	RETURN			;Returns to main
+	END			;end the code
